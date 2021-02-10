@@ -40,6 +40,7 @@ public class FirstFragment extends Fragment {
         list.add(new CheckModel().setName("Raksa Barjatiya "));
         list.add(new CheckModel().setName("Lakhan Verma "));
         CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(list);
+        checkBoxAdapter.setSingleSelection(true);
         recyclerView.setAdapter(checkBoxAdapter);
         checkBoxAdapter.setRunnable(new Runnable() {
             @Override
@@ -61,11 +62,11 @@ public class FirstFragment extends Fragment {
 
                     }
                 }
-                if (checkModels.size()>=2) {
+               /* if (checkModels.size()>=2) {
                     checkBoxAdapter.disable(true);
                 }else {
                     checkBoxAdapter.disable(false);
-                }
+                }*/
                 Log.i(TAG, "Selected size" + checkModels.size());
             }
         });

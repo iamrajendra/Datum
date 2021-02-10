@@ -16,8 +16,19 @@ import java.util.List;
 public class CheckBoxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String TAG = CheckBoxAdapter.class.getSimpleName();
     private List<CheckModel> checkList;
-    private  Runnable runnable;
+    private Runnable runnable;
     private boolean checkDisable;
+    private boolean singleSelection;
+    private int lastPos = -1;
+
+    public boolean isSingleSelection() {
+        return singleSelection;
+    }
+
+    public void setSingleSelection(boolean singleSelection) {
+        this.singleSelection = singleSelection;
+    }
+
 
     public void setRunnable(Runnable runnable) {
         this.runnable = runnable;
@@ -37,22 +48,27 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         CheckboxViewHolder checkboxViewHolder = (CheckboxViewHolder) holder;
         checkboxViewHolder.build(checkList.get(position), position);
-        CheckModel checkModel = checkList.get(position);
 
-
-        checkboxViewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
+        checkboxViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isSingleSelection()) {
 
-                if (checkDisable){
-                    checkList.get(position).setState(false);
-                    checkboxViewHolder.checkBox.setChecked(false);
-                }
+                    if (checkDisable) {
+                        checkList.get(position).setState(false);
+                        checkboxViewHolder.checkBox.setChecked(false);
+                    }
 
                     checkList.get(position).setState(checkboxViewHolder.checkBox.isChecked());
 
-                Handler h = new Handler();
-                h.postDelayed(runnable,500);
+                    Handler h = new Handler();
+                    h.postDelayed(runnable, 500);
+                } else {
+                    for (int i = 0; i < checkList.size(); i++) {
+                        checkList.get(i).setState(i == position);
+                    }
+                    notifyDataSetChanged();
+                }
             }
         });
 
@@ -69,6 +85,6 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void disable(boolean b) {
-        checkDisable =b;
+        checkDisable = b;
     }
 }
